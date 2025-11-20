@@ -1,0 +1,67 @@
+package coreUtilities.utils;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+
+public class CommonEvents {
+    public WebDriver driver;
+    public WebDriverWait wait;
+
+    public CommonEvents(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+
+    // Navigate to URL
+    public CommonEvents navigateTo(String url) throws Exception {
+        try {
+            driver.get(url);
+            driver.manage().window().maximize();
+            System.out.println("Navigated to URL: " + url);
+        } catch (Exception e) {
+            throw new Exception("Unable to navigate to URL: " + url);
+        }
+        return this;
+    }
+
+    // Click on element by locator
+    public void click(By locator) throws Exception {
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+        } catch (Exception e) {
+            throw new Exception("Unable to click element: " + locator);
+        }
+    }
+
+    // Enter text
+    public void enterText(By locator, String text) throws Exception {
+        try {
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+            element.clear();
+            element.sendKeys(text);
+        } catch (Exception e) {
+            throw new Exception("Unable to enter text: " + text + " in element: " + locator);
+        }
+    }
+
+    // Get element text
+    public String getText(By locator) throws Exception {
+        try {
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).getText();
+        } catch (Exception e) {
+            throw new Exception("Unable to retrieve text for locator: " + locator);
+        }
+    }
+
+    // Check if element is displayed
+    public boolean isDisplayed(By locator) {
+        try {
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(locator)).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}
