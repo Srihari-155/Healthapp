@@ -1,0 +1,36 @@
+package coreUtilities.utils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class FileOperations {
+
+    // Reads test data from Excel file and returns it as a Map
+    public Map<String, String> readExcelPOI(String filePath, String sheetName) throws Exception {
+        Map<String, String> dataMap = new HashMap<>();
+        FileInputStream file = new FileInputStream(new File(filePath));
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheet(sheetName);
+        Iterator<Row> rowIterator = sheet.iterator();
+
+        // Assuming first column = Key, second column = Value
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            if (row.getCell(0) != null && row.getCell(1) != null) {
+                String key = row.getCell(0).getStringCellValue().trim();
+                String value = row.getCell(1).getStringCellValue().trim();
+                dataMap.put(key, value);
+            }
+        }
+
+        workbook.close();
+        file.close();
+        return dataMap;
+    }
+}
