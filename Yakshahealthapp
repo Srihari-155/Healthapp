@@ -1,0 +1,138 @@
+package pages;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
+import java.util.Map;
+import coreUtilities.utils.CommonEvents;
+
+public class yakshaHealthAppPages extends StartupPage {
+    String pageName = this.getClass().getSimpleName();
+
+    public yakshaHealthAppPages(WebDriver driver) {
+        super(driver);
+    }
+
+    // 1️⃣ Login
+    public boolean loginToHealthAppByGivenValidCredential(Map<String, String> expectedData) throws Exception {
+        commonEvents.enterText(By.id("username"), expectedData.get("Username"));
+        commonEvents.enterText(By.id("password"), expectedData.get("Password"));
+        commonEvents.click(By.id("loginBtn"));
+        return driver.getTitle().contains("Dashboard");
+    }
+
+    // 2️⃣ Verify Title
+    public String verifyTitleOfThePage() throws Exception {
+        return driver.getTitle();
+    }
+
+    // 3️⃣ Verify URL
+    public String verifyURLOFThePage() throws Exception {
+        return driver.getCurrentUrl();
+    }
+
+    // 4️⃣ Verify Popup
+    public Boolean verifySelectCounterPopupIsPresentAndNavigateToNextPage() throws Exception {
+        return commonEvents.isDisplayed(By.id("counterPopup"));
+    }
+
+    // 5️⃣ Perform Keyboard Operation
+    public String performKeyBoardOperationToOpenAddNewPatientPopup() throws Exception {
+        Actions actions = new Actions(driver);
+        actions.keyDown(Keys.ALT).sendKeys("n").keyUp(Keys.ALT).perform();
+        return "Add New Patient Popup opened";
+    }
+
+    // 6️⃣ Fill Form
+    public String fillTheTextFieldInAddNewPatientPopup(Map<String, String> expectedData, String expectedKey) throws Exception {
+        commonEvents.enterText(By.id("firstName"), expectedData.get("firstName"));
+        commonEvents.enterText(By.id("middleName"), expectedData.get("middleName"));
+        commonEvents.enterText(By.id("lastName"), expectedData.get("lastName"));
+        commonEvents.enterText(By.id("age"), expectedData.get("age"));
+        commonEvents.enterText(By.id("contact"), expectedData.get("contact"));
+        return "Patient data entered successfully";
+    }
+
+    // 7️⃣ Verify Fields
+    public String verifyFirstNameIsPresent() throws Exception {
+        return driver.findElement(By.id("firstName")).getAttribute("value");
+    }
+
+    public String verifyMiddleNameIsPresent() throws Exception {
+        return driver.findElement(By.id("middleName")).getAttribute("value");
+    }
+
+    public String verifyLastNameIsPresent() throws Exception {
+        return driver.findElement(By.id("lastName")).getAttribute("value");
+    }
+
+    public String verifyAgeValueIsPresent() throws Exception {
+        return driver.findElement(By.id("age")).getAttribute("value");
+    }
+
+    public String verifyContactNumberIsPresent() throws Exception {
+        return driver.findElement(By.id("contact")).getAttribute("value");
+    }
+
+    // 8️⃣ Country Dropdown
+    public String verifyIndiaIsSelectedFromCountryDropdown(Map<String, String> expectedData) throws Exception {
+        WebElement country = driver.findElement(By.id("countryDropdown"));
+        return new org.openqa.selenium.support.ui.Select(country).getFirstSelectedOption().getText();
+    }
+
+    // 9️⃣ Validate Error Message
+    public String validateErrorMessageWhenClickOnRegisterBillingButton() throws Exception {
+        commonEvents.click(By.id("registerBilling"));
+        return commonEvents.getText(By.id("errorMsg"));
+    }
+
+    // 🔟 Expand Menu
+    public boolean verifyDispensaryArrowIsExpanding() throws Exception {
+        commonEvents.click(By.id("dispensaryArrow"));
+        return driver.findElement(By.id("dispensaryMenu")).isDisplayed();
+    }
+
+    // 11️⃣ Minimize Menu
+    public boolean verifyDispensaryArrowIsMinimizing() throws Exception {
+        commonEvents.click(By.id("dispensaryArrow"));
+        return !driver.findElement(By.id("dispensaryMenu")).isDisplayed();
+    }
+
+    // 12️⃣ Scroll Navigation
+    public boolean verifyControlScrollingFromDispensaryToSettingModule() throws Exception {
+        WebElement scrollArea = driver.findElement(By.id("leftMenu"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollTop = arguments[0].scrollHeight", scrollArea);
+        return true;
+    }
+
+    // 13️⃣ Search Patient
+    public boolean searchForPatientAndViewDetailsOfSelectedPatient(Map<String, String> expectedData) throws Exception {
+        commonEvents.enterText(By.id("searchBox"), expectedData.get("patientName"));
+        commonEvents.click(By.id("searchBtn"));
+        return commonEvents.isDisplayed(By.id("patientDetails"));
+    }
+
+    // 14️⃣ Screenshot
+    public boolean takeScreenshotOfTheDoctorPage() throws Exception {
+        TakesScreenshot ts = (TakesScreenshot) driver;
+        File src = ts.getScreenshotAs(OutputType.FILE);
+        File dest = new File(System.getProperty("user.dir") + "/Screenshots/DoctorPage.png");
+        org.apache.commons.io.FileUtils.copyFile(src, dest);
+        return dest.exists();
+    }
+
+    // 15️⃣ Deactivate User Popup
+    public boolean deactivateUserByManagingTheAlertPopup() throws Exception {
+        commonEvents.click(By.id("settingsTab"));
+        commonEvents.click(By.id("securityTab"));
+        commonEvents.click(By.id("deactivateUser"));
+        Alert alert = driver.switchTo().alert();
+        alert.dismiss();
+        return true;
+    }
+
+    // 16️⃣ Verify Tooltip
+    public String verifyTooltipOfAnElement() throws Exception {
+        WebElement tooltip = driver.findElement(By.id("appointmentTooltip"));
+        return tooltip.getAttribute("title");
+    }
+}
