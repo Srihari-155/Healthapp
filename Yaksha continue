@@ -1,0 +1,12 @@
+       commonEvents.click(appointmentTab);
+			 commonEvents.waitTillElementVisible(keyboardButton,50);
+			 commonEvents.mouseHoverClick(keyboardButton);
+			 commonEvents.waitTillElementVisible(tooltip,50);
+			 tooltipText=commonEvents.getText(tooltip);
+			 System.out.println("Tooltip text value is:" +tooltipText);
+		}catch(Exception e) {
+			throw e;
+		}
+		return tooltipText;
+	}
+}
